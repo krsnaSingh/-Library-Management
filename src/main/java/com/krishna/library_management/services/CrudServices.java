@@ -7,6 +7,8 @@ import org.springframework.stereotype.Component;
 import java.util.List;
 import java.util.NoSuchElementException;
 import java.util.Optional;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 
 @Component
 public class CrudServices {
@@ -22,6 +24,10 @@ public class CrudServices {
     public List<Books> getAllBooks(){
         List<Books> booklist = booksRepository.findAll();
         return booklist;
+    }
+
+    public Page<Books> getPaginatedBooks(Pageable pageable) {
+        return booksRepository.findAll(pageable);
     }
 
     public Optional<Books> getBookById(Long id) {

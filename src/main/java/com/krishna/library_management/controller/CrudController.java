@@ -3,9 +3,11 @@ package com.krishna.library_management.controller;
 import com.krishna.library_management.entities.Books;
 import com.krishna.library_management.services.CrudServices;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.PageRequest;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.data.domain.Page;
 
 import java.util.*;
 
@@ -36,6 +38,7 @@ public class CrudController {
         }
     }
 
+
     @GetMapping("/getAllBooks")
     public ResponseEntity<?> getAllBooks(){
         List<Books> booklist;
@@ -48,6 +51,19 @@ public class CrudController {
              }
         } catch (Exception e) {
             throw new RuntimeException(e);
+        }
+    }
+
+    @GetMapping("/getAllPaginatedBooks")
+    public ResponseEntity<?> getAllBooks(
+            @RequestParam(defaultValue = "0") int page,
+            @RequestParam(defaultValue = "5") int size
+    ) {
+        Page<Books> paginatedBooks = crudServices.getPaginatedBooks(PageRequest.of(page, size));
+        if (paginatedBooks.hasContent()) {
+            return ResponseEntity.ok(paginatedBooks);
+        } else {
+            return ResponseEntity.status(404).body("No books found for the given page and size.");
         }
     }
 
